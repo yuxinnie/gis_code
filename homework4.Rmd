@@ -1,0 +1,79 @@
+---
+title: "homework4"
+author: "yuxin"
+date: "2022-10-28"
+output: html_document
+---
+##The task this week is to:
+
+Read in *global gender inequality data*
+Join the global gender inequality index to *spatial data of the World*, creating a *new column of difference* in inequality between 2010 and 2019
+Share it with the World on GitHub
+Add you repository URL to the circulated spreadsheet
+Tip：the countrycode R package will be helpful!
+
+Tip：the gender inequality has changed in the last year, you will find what you need in the “All composite indices and components time series (1990-2021)” dataset, the metadata file beneath it will explain what the columns are.
+```{r warning=FALSE} 
+library(tidyverse)
+library(sf)
+library(janitor)
+library(dplyr)
+
+```
+
+```{r warning=FALSE} 
+gender_inequality <- read_csv('F:/00CASA/GIS/wk4/HDR21-22_Composite_indices_complete_time_series.csv',na = 'NA')
+head(gender_inequality)
+```
+
+```{r}
+gender_inequality_2years <- gender_inequality %>% 
+  clean_names() %>% 
+  dplyr::select('country','gdi_2010','gdi_2019')
+head(gender_inequality_2years)
+```
+
+```{r}
+worldmap <- st_read('F:/00CASA/GIS/wk4/World_Countries_(Generalized)/World_Countries__Generalized_.shp')
+head(worldmap)
+```
+```{r}
+world_inequality <- worldmap %>% 
+  merge(.,
+        gender_inequality_2years,
+        by.x='COUNTRY',
+        by.y='country')
+head(world_inequality)
+```
+
+```{r}
+world_inequality_diff <- world_inequality %>% 
+  mutate(decade_diff = gdi_2019-gdi_2010)
+head(world_inequality_diff)
+```
+```{r}
+world_inequality_diff2 <- world_inequality_diff %>% 
+  mutate(diff_type=case_when(decade_diff>0 ~'rise',
+                             decade_diff==0 ~'same',
+                             TRUE ~'fall'))
+```
+
+
+
+```{r}
+library(tmap)
+```
+
+```{r}
+tmap_mode('plot')
+
+qtm(world_inequality_diff2,
+    fill = 'diff_type')
+```
+
+
+
+
+
+
+
