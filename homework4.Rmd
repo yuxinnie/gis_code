@@ -18,11 +18,11 @@ library(tidyverse)
 library(sf)
 library(janitor)
 library(dplyr)
-
+library(here)
 ```
 
 ```{r warning=FALSE} 
-gender_inequality <- read_csv('F:/00CASA/GIS/wk4/HDR21-22_Composite_indices_complete_time_series.csv',na = 'NA')
+gender_inequality <- read_csv(here::here('data','HDR21-22_Composite_indices_complete_time_series.csv'))
 head(gender_inequality)
 ```
 
@@ -34,7 +34,7 @@ head(gender_inequality_2years)
 ```
 
 ```{r}
-worldmap <- st_read('F:/00CASA/GIS/wk4/World_Countries_(Generalized)/World_Countries__Generalized_.shp')
+worldmap <- st_read(here::here('data','World_Countries_(Generalized)','World_Countries__Generalized_.shp'))
 head(worldmap)
 ```
 ```{r}
